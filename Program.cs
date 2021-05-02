@@ -142,7 +142,7 @@ namespace Elevator
         {
             var rnd = new Random();
             int index = rnd.Next(1,4);
-            Console.WriteLine(index);
+            
             if (index == 1)
             {
                 ShowElivator1Flour();
