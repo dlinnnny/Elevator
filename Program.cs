@@ -159,7 +159,6 @@ namespace Elevator
         static void Timer()
         {
             Thread.Sleep(500);
-
         }//Timer
     }
 }
