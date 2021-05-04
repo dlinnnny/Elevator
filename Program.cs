@@ -14,10 +14,7 @@ namespace Elevator
 
         static void Main()
         {
-            Screen();
-                        
             Console.Clear();
-
             Screen();
             Random();
 
@@ -138,11 +135,26 @@ namespace Elevator
             {
                 ShowElivator3Flour();
             }
-        }
-    }
-}   
+        }// SetButtons
 
-
+        static void Random()
+        {
+            var rnd = new Random();
+            int index = rnd.Next(1, 4);
+            Console.WriteLine(index);
+            if (index == 1)
+            {
+                ShowElivator1Flour();
+            }
+            else if (index == 2)
+            {
+                ShowElivator2Flour();
+            }
+            else
+            {
+                ShowElivator3Flour();
+            }
+        }//Random()
 
         static void Timer()
         {
