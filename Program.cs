@@ -9,7 +9,8 @@ namespace Elevator
         public static int y = 17;
         public static int cursorX = 30, cursorY = 11;
         public static int statusFlour;
-
+        public static string Overlap = "=                           = =============== =            =";
+        
         static void Main()
         {
             Screen();
@@ -24,26 +25,28 @@ namespace Elevator
 
         static void Screen()
         {
+            
             Console.CursorVisible = false;
             Console.SetWindowSize(x, y);
             Console.SetBufferSize(x, y);
-            Console.Write(
-                "============================================================" +
-                "=                           =                 =            =" +
-                "=                           =                 =            =" +
-                "=                           =                 =            =" +
-                "=                 3ий этаж  =                 =            =" +
-                "=                           = =============== =            =" +
-                "=                           =                 =            =" +
-                "=                           =                 =            =" +
-                "=                 2ой этаж  =                 =            =" +
-                "=                           =                 =            =" +
-                "=                           = =============== =            =" +
-                "=                           =                 =            =" +
-                "=                           =                 =            =" +
-                "=                 1ый этаж  =                 =            =" +
-                "=                           =                 =            =" +
-                "= ==========================================================");
+            Console.Write("============================================================");
+            Console.Write("=                           =                 =            =");
+            Console.Write("=                           =                 =            =");
+            Console.Write("=                 3ий этаж  =                 =            =");
+            Console.Write("=                           =                 =            =");
+            Console.Write(Overlap);
+            Console.Write("=                           =                 =            =");
+            Console.Write("=                           =                 =            =");
+            Console.Write("=                 2ой этаж  =                 =            =");
+            Console.Write("=                           =                 =            =");
+            Console.Write(Overlap);
+            Console.Write("=                           =                 =            =");
+            Console.Write("=                           =                 =            =");
+            Console.Write("=                 1ый этаж  =                 =            =");
+            Console.Write("=                           =                 =            =");
+            Console.Write("============================================================");
+
+            
 
         }//Screen()
 
@@ -137,7 +140,7 @@ namespace Elevator
             Programm.statusFlour = 1;
 
         }//ShowElivator1Flour()
-         
+
         static void ShowElivator2Flour()
         {
             Programm.cursorX = 30;
@@ -178,10 +181,12 @@ namespace Elevator
             Console.WriteLine(new string('*', 15));
             Console.SetCursorPosition(Programm.cursorX, Programm.cursorY+3);
             Console.WriteLine(new string('*', 15));
+
         }//Cabin
 
         static void Up()
         {
+
             for (int i = 5; i != 0; i--)
             {
                 Console.Clear();
@@ -191,6 +196,7 @@ namespace Elevator
                 Console.SetCursorPosition(cursorX, cursorY );
                 Console.ForegroundColor = ConsoleColor.Red;
                 Cabin();
+                OverlapChange();
                 Timer();
             }
         }//Up()
@@ -200,14 +206,26 @@ namespace Elevator
             for (int i = 0; i != 5; i++)
             {
                 Console.Clear();
+                
                 Console.ResetColor();
                 Screen();
                 cursorY += 1;
                 Console.SetCursorPosition(cursorX, cursorY);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Cabin();
+                OverlapChange();
                 Timer();
             }
         }//Down()
+
+        static void OverlapChange()
+        {
+            Console.ResetColor();
+            Console.SetCursorPosition(0, 5);
+            Console.Write(Overlap);
+            Console.SetCursorPosition(0, 10);
+            Console.Write(Overlap);
+        }
+        
     }
 }
