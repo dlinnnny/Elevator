@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4391E88B-9F36-423C-8D02-86950D9669F8}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>statiCS</RootNamespace>
+    <RootNamespace>Elevator</RootNamespace>
     <AssemblyName>statiCS</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -58,6 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums.cs" />
+    <Compile Include="Extensions\ConsoleKeyExtensions.cs" />
+    <Compile Include="Extensions\FloorsExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
