@@ -1,31 +1,42 @@
-﻿using System;
+﻿using Elevator.Extensions;
+using System;
 using System.Threading;
 
 namespace Elevator
 {
     class Programm
     {
-        public static int x = 60;
-        public static int y = 17;
+        public static int x = 60;//магическое число 1
+        public static int y = 17;//магическое число 2
         public static int cursorX = 30, cursorY = 11;
-        public static int statusFlour;
+        public static Floors statusFlour;//текущий этаж
         public static string Overlap = "=                           = =============== =            =";
-        
+
+        /// <summary>
+        /// Точка входа в программу
+        /// </summary>
         static void Main()
         {
-            Screen();
-            Random();
-            
+            DisplayScreen();
+            ShowElivatorFloor((Floors)new Random().Next(1, 4));
             while (true)
             {
-                SetButtons();
+                try
+                {
+                    SetButtons();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
+        }
 
-        }//Main()
-
-        static void Screen()
+        /// <summary>
+        /// Отображаем экран на консоли
+        /// </summary>
+        static void DisplayScreen()
         {
-            
             Console.CursorVisible = false;
             Console.SetWindowSize(x, y);
             Console.SetBufferSize(x, y);
@@ -45,179 +56,126 @@ namespace Elevator
             Console.Write("=                 1ый этаж  =                 =            =");
             Console.Write("=                           =                 =            =");
             Console.Write("============================================================");
+        }
 
-            
-
-        }//Screen()
-
+        /// <summary>
+        /// Передвигаем лифт в зависимости от нажатой кнопки
+        /// </summary>
         static void SetButtons()
         {
             Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(3, 2);
-            var key = Console.ReadKey().Key;
-
-            if (key == ConsoleKey.D1 && statusFlour == 2 || key == ConsoleKey.NumPad1 && statusFlour == 2)
+            var nextFloor = Console.ReadKey().Key.AsFloor();
+            switch (Programm.statusFlour.GetAction(nextFloor))
             {
-                Down();
-                ShowElivator1Flour();
-            }//Key1
-
-            else if (key == ConsoleKey.D1 && statusFlour == 3 || key == ConsoleKey.NumPad1 && statusFlour == 3)
-            {
-                for (int i = statusFlour; i != 1; i--)
-                {
-                    Down();
-                }
-                ShowElivator1Flour();
-            }//Key1
-
-            else if (key == ConsoleKey.D2 && statusFlour == 3 || key == ConsoleKey.NumPad2 && statusFlour == 3)
-            {
-                Down();
-                ShowElivator2Flour();
-            }//Key2
-
-            else if (key == ConsoleKey.D2 && statusFlour == 1 || key == ConsoleKey.NumPad2 && statusFlour == 1)
-            {
-                Up();
-                ShowElivator2Flour();
-            }//Key2
-
-            else if (key == ConsoleKey.D3 && statusFlour == 2 || key == ConsoleKey.NumPad3 && statusFlour == 2)
-            {
-                Up();
-                ShowElivator3Flour();
-            }//Key3
-
-            else if (key == ConsoleKey.D3 && statusFlour == 1 || key == ConsoleKey.NumPad3 && statusFlour == 1)
-            {
-                for (int i = statusFlour; i != 3; i++)
-                {
-                    Up();
-                }
-                ShowElivator3Flour();
-            }//Key3
-        }//SetButtons()
-
-        static void Random()
-        {
-            var rnd = new Random();
-            int index = rnd.Next(1, 4);
-            
-            if (index == 1)
-            {
-                ShowElivator1Flour();
-                Programm.statusFlour = 1;
+                case ElevatorAction.Down:
+                    Down(Programm.statusFlour.GetLevel(nextFloor));
+                    break;
+                case ElevatorAction.Up:
+                    Up(Programm.statusFlour.GetLevel(nextFloor));
+                    break;
             }
-            else if (index == 2)
-            {
-                ShowElivator2Flour();
-                Programm.statusFlour = 2;
-            }
-            else
-            {
-                ShowElivator3Flour();
-                Programm.statusFlour = 3;
-            }
-        }//Random()
+            Programm.statusFlour = nextFloor;
+        }
 
-        static void Timer()
+        /// <summary>
+        /// Задержка двидения лифта
+        /// </summary>
+        static void WaitTimer()
         {
             Thread.Sleep(500);
-        }//Timer()
+        }
 
-        static void ShowElivator1Flour()
+        /// <summary>
+        /// Получает значение курсора по оси Y в зависимости от заданного этажа
+        /// </summary>
+        /// <param name="flour">Этаж для которого задается курсор</param>
+        /// <returns>Значение курсора.</returns>
+        static int GetCursorYByFlour(Floors flour)
         {
-            cursorX = 30;
-            cursorY = 11;
-            
+            switch (flour)
+            {
+                case Floors.First: return 11;
+                case Floors.Second: return 6;
+                case Floors.Third: return 1;
+                default: break;
+            }
+            return 11;
+        }
+
+        /// <summary>
+        /// Отоюражаем лифт в зависимости от заданного этажа
+        /// </summary>
+        /// <param name="flour"></param>
+        static void ShowElivatorFloor(Floors flour)
+        {
+            Programm.cursorY = GetCursorYByFlour(flour);
             Console.Clear();
             Console.ResetColor();
-            Screen();
+            DisplayScreen();
             Console.SetCursorPosition(Programm.cursorX, Programm.cursorY);
             Console.ForegroundColor = ConsoleColor.Red;
+            Programm.statusFlour = flour;
             Cabin();
-            Programm.statusFlour = 1;
+        }
 
-        }//ShowElivator1Flour()
-
-        static void ShowElivator2Flour()
-        {
-            Programm.cursorX = 30;
-            Programm.cursorY = 6;
-
-            Console.Clear();
-            Console.ResetColor();
-            Screen();
-            Console.SetCursorPosition(Programm.cursorX, Programm.cursorY);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Cabin();
-            Programm.statusFlour = 2;
-
-        }//ShowElivator2Flour()
-
-        static void ShowElivator3Flour()
-        {
-            Programm.cursorX = 30;
-            Programm.cursorY = 1;
-
-            Console.Clear();
-            Console.ResetColor();
-            Screen();
-            Console.SetCursorPosition(Programm.cursorX, Programm.cursorY);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Programm.statusFlour = 3;
-            Cabin();
-
-        }//ShowElivator3Flour()
-
+        /// <summary>
+        /// Вообще ХЗ что тут происходит :)
+        /// </summary>
         static void Cabin()
         {
-            Console.SetCursorPosition(Programm.cursorX, Programm.cursorY);
-            Console.WriteLine(new string('*', 15));
-            Console.SetCursorPosition(Programm.cursorX, Programm.cursorY+1);
-            Console.WriteLine(new string('*', 15));
-            Console.SetCursorPosition(Programm.cursorX, Programm.cursorY+2);
-            Console.WriteLine(new string('*', 15));
-            Console.SetCursorPosition(Programm.cursorX, Programm.cursorY+3);
-            Console.WriteLine(new string('*', 15));
-
-        }//Cabin
-
-        static void Up()
-        {
-
-            for (int i = 5; i != 0; i--)
+            for (int i = 0; i < 4; i++)
             {
-                Console.Clear();
-                Console.ResetColor();
-                Screen();
-                cursorY -= 1;
-                Console.SetCursorPosition(cursorX, cursorY );
-                Console.ForegroundColor = ConsoleColor.Red;
-                Cabin();
-                OverlapChange();
-                Timer();
+                Console.SetCursorPosition(Programm.cursorX, Programm.cursorY + i);
+                Console.WriteLine(new string('*', 15));
             }
-        }//Up()
+        }
 
-        static void Down()
+        /// <summary>
+        /// Поднимает лифт на заданное количество этажей
+        /// </summary>
+        /// <param name="levels">Кол-во этажей</param>
+        static void Up(int levels = 1)
         {
-            for (int i = 0; i != 5; i++)
-            {
-                Console.Clear();
-                
-                Console.ResetColor();
-                Screen();
-                cursorY += 1;
-                Console.SetCursorPosition(cursorX, cursorY);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Cabin();
-                OverlapChange();
-                Timer();
-            }
-        }//Down()
+            for (int level = 0; level < levels; level++)
+                for (int i = 5; i != 0; i--)
+                {
+                    Console.Clear();
+                    Console.ResetColor();
+                    DisplayScreen();
+                    cursorY -= 1;
+                    Console.SetCursorPosition(cursorX, cursorY);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Cabin();
+                    OverlapChange();
+                    WaitTimer();
+                }
+        }
 
+        /// <summary>
+        /// Опускает лифт на заданное количество этажей
+        /// </summary>
+        /// <param name="levels">Кол-во этажей</param>
+        static void Down(int levels = 1)
+        {
+            for (int level = 0; level < levels; level++)
+                for (int i = 0; i != 5; i++)
+                {
+                    Console.Clear();
+                    Console.ResetColor();
+                    DisplayScreen();
+                    cursorY += 1;
+                    Console.SetCursorPosition(cursorX, cursorY);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Cabin();
+                    OverlapChange();
+                    WaitTimer();
+                }
+        }
+
+        /// <summary>
+        /// Неизвестная мне фигнюшка :)
+        /// </summary>
         static void OverlapChange()
         {
             Console.ResetColor();
@@ -226,6 +184,6 @@ namespace Elevator
             Console.SetCursorPosition(0, 10);
             Console.Write(Overlap);
         }
-        
+
     }
 }
